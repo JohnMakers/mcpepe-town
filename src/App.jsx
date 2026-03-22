@@ -6,7 +6,7 @@ import Gallery from './pages/Gallery';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/mcpepe-town">
       <Routes>
         {/* The root URL shows the map */}
         <Route path="/" element={<TownMap />} />
