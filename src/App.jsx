@@ -1,12 +1,13 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom'; // Changed to HashRouter
 import TownMap from './pages/TownMap';
 import Cinema from './pages/Cinema';
 import Gallery from './pages/Gallery';
 
 export default function App() {
   return (
-    <BrowserRouter basename="/mcpepe-town">
+    // Replaced BrowserRouter with HashRouter
+    <HashRouter>
       <Routes>
         {/* The root URL shows the map */}
         <Route path="/" element={<TownMap />} />
@@ -16,8 +17,7 @@ export default function App() {
 
         {/* The /gallery URL shows our new gallery page */}
         <Route path="/gallery" element={<Gallery />} />
-
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
