@@ -1,37 +1,7 @@
 import React, { useState } from 'react';
 import cinemaBg from '../assets/cinema1.png';
 import ticketBg from '../assets/ticket1.png';
-
-const MOVIES = [
-  { 
-    id: 'keonne', 
-    title: 'The Keonne Rodriguez Story', 
-    subtitle: 'The documentary behind the Samourai', 
-    description: 'Animated exploration of the life, times, and controversies surrounding Keonne Rodriguez.', 
-    ytId: 'dQw4w9WgXcQ' 
-  },
-  { 
-    id: 'piratebay', 
-    title: 'The Pirate Bay Hack', 
-    subtitle: 'True Crime Documentary', 
-    description: 'A deep dive into the world\'s most resilient torrent site and the digital battles fought to keep it online.', 
-    ytId: 'dQw4w9WgXcQ' 
-  },
-  { 
-    id: 'Samourai', 
-    title: 'Samourai Wallet: The Skinwalker and the Suburbs', 
-    subtitle: 'Keonne notes in jail', 
-    description: 'How a simple wallet app became a battlefield for digital freedom.', 
-    ytId: '7iztez7fAYQ' 
-  },
-  { 
-    id: 'epstein', 
-    title: 'The Epstein Saga', 
-    subtitle: 'Investigative Report', 
-    description: 'Uncovering the dark web of digital connections in one of the most infamous true crime cases of our time.', 
-    ytId: 'dQw4w9WgXcQ' 
-  }
-];
+import { useData } from '../context/DataContext';
 
 function TicketItem({ movie, onSelect }) {
   const [isTooltipHovered, setIsTooltipHovered] = useState(false);
@@ -167,6 +137,7 @@ function TicketItem({ movie, onSelect }) {
 }
 
 export default function Cinema() {
+  const { movies } = useData();
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
@@ -265,7 +236,7 @@ export default function Cinema() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {MOVIES.map((movie) => (
+              {movies.map((movie) => (
                 <TicketItem key={movie.id} movie={movie} onSelect={handleSelectMovie} />
               ))}
             </div>
