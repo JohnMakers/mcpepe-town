@@ -217,7 +217,7 @@ export default function Gallery() {
                 lineHeight: '1.1',
                 padding: '0 2%',
                 overflow: 'hidden',
-                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)'
+                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)' 
               }}>
                 {frame.data.title}
               </div>
@@ -241,10 +241,10 @@ export default function Gallery() {
           </div>
         )}
 
-        {/* MAIN TITLE (FIXED MOBILE SCALING & PUSHED DOWN) */}
+        {/* MAIN TITLE (FIXED: Added whiteSpace nowrap and adjusted width to 100% to completely prevent breaking onto two lines) */}
         {!selectedArt && currentRoomData.id === 'center' && (
-          <div style={{ position: 'fixed', top: 'clamp(30px, 8vh, 60px)', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', pointerEvents: 'none', zIndex: 5, width: '90%', maxWidth: '1000px' }}>
-            <h1 style={{ margin: 0, lineHeight: '1.2', fontFamily: '"Georgia", "Times New Roman", serif', fontSize: 'clamp(18px, 6vw, 45px)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: 'clamp(2px, 1vw, 8px)', background: 'linear-gradient(to right, #b8860b, #ffd700, #fff8dc, #ffd700, #b8860b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.8)) drop-shadow(0px 2px 4px rgba(0,0,0,0.6))' }}>
+          <div style={{ position: 'fixed', top: 'clamp(20px, 5vh, 50px)', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', pointerEvents: 'none', zIndex: 5, width: '100%' }}>
+            <h1 style={{ margin: 0, lineHeight: '1.2', fontFamily: '"Georgia", "Times New Roman", serif', fontSize: 'clamp(20px, 5vw, 48px)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: 'clamp(2px, 0.5vw, 6px)', whiteSpace: 'nowrap', background: 'linear-gradient(to right, #b8860b, #ffd700, #fff8dc, #ffd700, #b8860b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.8)) drop-shadow(0px 2px 4px rgba(0,0,0,0.6))' }}>
               McPepe Art Gallery
             </h1>
           </div>
