@@ -131,7 +131,7 @@ export default function Admin() {
     return (
       <div style={s.wrapper}>
         <div style={s.loginBox}>
-          <h2 style={{ margin: '0 0 24px 0', color: '#fff' }}>Secure Admin Access</h2>
+          <h2 style={{ margin: '0 0 24px 0', color: '#fff' }}>Admin Access</h2>
           <form onSubmit={handleLogin}>
             <input 
               type="password" placeholder="Enter Password" value={passwordInput} 
@@ -139,7 +139,7 @@ export default function Admin() {
               style={{ ...s.input, textAlign: 'center' }} autoFocus 
             />
             {loginError && <p style={{ color: '#ef4444', fontSize: '14px', margin: '0 0 16px 0' }}>{loginError}</p>}
-            <button type="submit" style={s.btnPrimary}>Unlock System</button>
+            <button type="submit" style={s.btnPrimary}>Log in</button>
           </form>
         </div>
       </div>

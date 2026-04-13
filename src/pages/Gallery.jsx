@@ -2,11 +2,10 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import artLeft from '../assets/art_left.png';
 import artCenter from '../assets/art_center.png';
 import artRight from '../assets/art_right.png';
-import artTransition from '../assets/art_transition.png'; // Your new transition hallway
-import comingSoonImg from '../assets/coming_soon.png'; // Your new placeholder image
+import artTransition from '../assets/art_transition.png'; 
+import comingSoonImg from '../assets/coming_soon.png'; 
 import { useData } from '../context/DataContext';
 
-// We define the raw hitboxes for the 4 possible room layouts
 const BASE_SLOTS = {
   left: {
     bg: artLeft,
@@ -36,7 +35,6 @@ const BASE_SLOTS = {
   },
   transition: {
     bg: artTransition,
-    // Transitions use the same 3 flat hitboxes as the center room
     frames: [
       { canvas: { x: '23.8%', y: '34.9%', w: '12.5%', h: '32.2%', transform: 'none' }, plaque: { x: '22.7%', y: '76.5%', w: '14.6%', h: '7%', transform: 'none' } },
       { canvas: { x: '44.4%', y: '34.8%', w: '12.3%', h: '32.3%', transform: 'none' }, plaque: { x: '43.1%', y: '76.5%', w: '14.6%', h: '7%', transform: 'none' } },
@@ -48,26 +46,21 @@ const BASE_SLOTS = {
 export default function Gallery() {
   const { gallery } = useData(); 
   
-  // 1. Calculate the spatial hallway layout dynamically
   const galleryRooms = useMemo(() => {
     const totalArt = gallery.length;
-    // Base rooms give us 11 slots (4 left + 3 center + 4 right)
     const extraSlotsNeeded = Math.max(0, totalArt - 11);
     const transitionRoomsNeeded = Math.ceil(extraSlotsNeeded / 3);
 
     let oddTransitions = [];
     let evenTransitions = [];
 
-    // Deal them out left and right of center (T1 left, T2 right, T3 left, T4 right...)
     for (let i = 1; i <= transitionRoomsNeeded; i++) {
       if (i % 2 !== 0) oddTransitions.unshift(`transition_${i}`);
       else evenTransitions.push(`transition_${i}`);
     }
 
-    // Combine into final hallway map
     const roomSequence = ['left', ...oddTransitions, 'center', ...evenTransitions, 'right'];
 
-    // Map artworks left-to-right into the active hitboxes
     let currentItemIndex = 0;
     return roomSequence.map((roomId) => {
       const templateType = roomId.startsWith('transition') ? 'transition' : roomId;
@@ -77,7 +70,6 @@ export default function Gallery() {
         const data = gallery[currentItemIndex];
         currentItemIndex++;
 
-        // If we have art, show it. Otherwise inject the "Coming Soon" placeholder
         if (data) {
           return { ...frameCanvas, data };
         } else {
@@ -100,7 +92,6 @@ export default function Gallery() {
     });
   }, [gallery]);
 
-  // Set the spawn point to always be the absolute center room
   const centerIndex = galleryRooms.findIndex(r => r.id === 'center');
   const [roomIndex, setRoomIndex] = useState(centerIndex > -1 ? centerIndex : 0);
   const [entryPosition, setEntryPosition] = useState('center');
@@ -176,18 +167,23 @@ export default function Gallery() {
   return (
     <>
       <style>{`
+        /* FIX: Adjusted Wrapper and Desktop Viewport Scaling */
         .gallery-viewport { width: 100vw; height: 100vh; background-color: #000; position: relative; overflow-x: auto; overflow-y: hidden; font-family: sans-serif; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none; }
         .gallery-viewport::-webkit-scrollbar { display: none; }
         .gallery-content-wrapper { position: relative; display: inline-block; height: 100vh; text-align: left; }
         .gallery-bg-image { display: block; height: 100vh; width: auto; max-width: none; max-height: none; }
+        
         .custom-scroll-indicator { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 40vw; max-width: 200px; height: 3px; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; z-index: 30; pointer-events: none; }
         .custom-scroll-ball { position: absolute; top: 50%; width: 10px; height: 10px; background-color: #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(255, 255, 255, 0.8); transform: translate(-50%, -50%); transition: left 0.05s linear; }
+        
+        /* Forces Desktop to perfectly cover the entire area */
         @media (min-width: 1024px) {
-          .gallery-viewport { overflow: hidden; display: flex; justify-content: center; align-items: center; }
-          .gallery-content-wrapper { height: auto; }
-          .gallery-bg-image { max-width: 100vw; max-height: 100vh; width: auto; height: auto; }
+          .gallery-viewport { overflow: hidden; display: block; }
+          .gallery-content-wrapper { height: 100vh; width: 100vw; }
+          .gallery-bg-image { width: 100vw; height: 100vh; object-fit: fill; }
           .mobile-tooltip, .custom-scroll-indicator { display: none !important; }
         }
+        
         @keyframes float-up { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-6px); } }
         @keyframes fade-in-up { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
         .mobile-tooltip { position: fixed; bottom: 45px; left: 50%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); color: #06b6d4; padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(6, 182, 212, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 0 10px rgba(6, 182, 212, 0.1); z-index: 40; pointer-events: none; display: flex; align-items: center; gap: 12px; animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards, float-up 2.5s infinite ease-in-out 0.6s; }
@@ -208,13 +204,8 @@ export default function Gallery() {
                 style={{
                   position: 'absolute', left: frame.canvas.x, top: frame.canvas.y, width: frame.canvas.w, height: frame.canvas.h,
                   transform: frame.canvas.transform, cursor: 'pointer',
-                  
-                  /* --- TEST BORDERS ADDED HERE --- */
-                  backgroundColor: 'rgba(57, 255, 20, 0.4)', // Semi-transparent Neon Green
-                  border: '2px solid #39ff14', // Solid Neon Green border
-                  backgroundImage: 'none', // Hides the actual art so you can see the box clearly
-                  zIndex: 100, // Forces it to the top
-                  
+                  backgroundColor: frame.data.image ? 'transparent' : 'rgba(255,255,255,0.7)', 
+                  backgroundImage: frame.data.image ? `url(${frame.data.image})` : 'none',
                   backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.2s ease, box-shadow 0.2s ease'
                 }}
                 onMouseOver={(e) => { e.currentTarget.style.transform = `${frame.canvas.transform} scale(1.03)`; e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.6)'; }}
@@ -223,9 +214,15 @@ export default function Gallery() {
               <div style={{
                 position: 'absolute', left: frame.plaque.x, top: frame.plaque.y, width: frame.plaque.w, height: frame.plaque.h,
                 transform: frame.plaque.transform, display: 'flex', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none', 
-                color: 'rgba(60, 40, 10, 0.9)', fontFamily: 'Georgia, serif', fontWeight: 'bold', fontSize: 'clamp(8px, 1.5cqi, 18px)',
-                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)',
-                border: '2px solid red' // TEST BORDER TO SEE PLAQUE HITBOX
+                color: 'rgba(60, 40, 10, 0.9)', fontFamily: 'Georgia, serif', fontWeight: 'bold', 
+                
+                /* FIX: Switched from broken cqi to highly stable vh */
+                fontSize: 'clamp(6px, 1.8vh, 22px)', 
+                lineHeight: '1.1',
+                padding: '0 2%',
+                overflow: 'hidden',
+
+                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)' 
               }}>
                 {frame.data.title}
               </div>
@@ -249,9 +246,10 @@ export default function Gallery() {
           </div>
         )}
 
+        {/* MAIN TITLE (FIXED CLAMPING AND ADDED LINE HEIGHT) */}
         {!selectedArt && currentRoomData.id === 'center' && (
-          <div style={{ position: 'fixed', top: '3%', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', pointerEvents: 'none', zIndex: 5, width: '100%' }}>
-            <h1 style={{ margin: 0, fontFamily: '"Georgia", "Times New Roman", serif', fontSize: 'clamp(20px, 4vw, 54px)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '8px', background: 'linear-gradient(to right, #b8860b, #ffd700, #fff8dc, #ffd700, #b8860b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.8)) drop-shadow(0px 2px 4px rgba(0,0,0,0.6))' }}>
+          <div style={{ position: 'fixed', top: 'clamp(15px, 4vh, 40px)', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', pointerEvents: 'none', zIndex: 5, width: '90%', maxWidth: '1000px' }}>
+            <h1 style={{ margin: 0, lineHeight: '1.2', fontFamily: '"Georgia", "Times New Roman", serif', fontSize: 'clamp(20px, 4vh, 45px)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: 'clamp(3px, 1vw, 8px)', background: 'linear-gradient(to right, #b8860b, #ffd700, #fff8dc, #ffd700, #b8860b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.8)) drop-shadow(0px 2px 4px rgba(0,0,0,0.6))' }}>
               McPepe Art Gallery
             </h1>
           </div>
@@ -279,7 +277,6 @@ export default function Gallery() {
               <p style={{ margin: '0 0 24px 0', fontSize: '14px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{color: '#64748b'}}>Created by</span> <span style={{ color: '#c084fc', textShadow: '0 0 10px rgba(192, 132, 252, 0.4)' }}>{selectedArt.artist}</span></p>
               <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
                 <button onClick={() => setSelectedArt(null)} style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', color: '#cbd5e1', padding: '14px 10px', borderRadius: '12px', cursor: 'pointer', fontWeight: '600', fontSize: '14px', transition: 'all 0.2s' }}>Back</button>
-                {/* Hide the buy button if it's a "Coming Soon" placeholder */}
                 {!selectedArt.isComingSoon && (
                   <button onClick={() => window.open(selectedArt.buyLink, '_blank')} style={{ flex: 2, background: 'linear-gradient(135deg, #06b6d4, #3b82f6)', border: 'none', color: '#fff', padding: '14px 10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', boxShadow: '0 10px 20px rgba(6, 182, 212, 0.3), inset 0 1px 0 rgba(255,255,255,0.3)' }}>Buy • {selectedArt.price}</button>
                 )}
