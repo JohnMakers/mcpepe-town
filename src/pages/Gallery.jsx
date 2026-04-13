@@ -208,8 +208,13 @@ export default function Gallery() {
                 style={{
                   position: 'absolute', left: frame.canvas.x, top: frame.canvas.y, width: frame.canvas.w, height: frame.canvas.h,
                   transform: frame.canvas.transform, cursor: 'pointer',
-                  backgroundColor: frame.data.image ? 'transparent' : 'rgba(255,255,255,0.7)', 
-                  backgroundImage: frame.data.image ? `url(${frame.data.image})` : 'none',
+                  
+                  /* --- TEST BORDERS ADDED HERE --- */
+                  backgroundColor: 'rgba(57, 255, 20, 0.4)', // Semi-transparent Neon Green
+                  border: '2px solid #39ff14', // Solid Neon Green border
+                  backgroundImage: 'none', // Hides the actual art so you can see the box clearly
+                  zIndex: 100, // Forces it to the top
+                  
                   backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.2s ease, box-shadow 0.2s ease'
                 }}
                 onMouseOver={(e) => { e.currentTarget.style.transform = `${frame.canvas.transform} scale(1.03)`; e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.6)'; }}
@@ -219,7 +224,8 @@ export default function Gallery() {
                 position: 'absolute', left: frame.plaque.x, top: frame.plaque.y, width: frame.plaque.w, height: frame.plaque.h,
                 transform: frame.plaque.transform, display: 'flex', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none', 
                 color: 'rgba(60, 40, 10, 0.9)', fontFamily: 'Georgia, serif', fontWeight: 'bold', fontSize: 'clamp(8px, 1.5cqi, 18px)',
-                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)' 
+                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)',
+                border: '2px solid red' // TEST BORDER TO SEE PLAQUE HITBOX
               }}>
                 {frame.data.title}
               </div>
