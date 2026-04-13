@@ -167,7 +167,6 @@ export default function Gallery() {
   return (
     <>
       <style>{`
-        /* FIX: Adjusted Wrapper and Desktop Viewport Scaling */
         .gallery-viewport { width: 100vw; height: 100vh; background-color: #000; position: relative; overflow-x: auto; overflow-y: hidden; font-family: sans-serif; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none; }
         .gallery-viewport::-webkit-scrollbar { display: none; }
         .gallery-content-wrapper { position: relative; display: inline-block; height: 100vh; text-align: left; }
@@ -176,7 +175,6 @@ export default function Gallery() {
         .custom-scroll-indicator { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 40vw; max-width: 200px; height: 3px; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; z-index: 30; pointer-events: none; }
         .custom-scroll-ball { position: absolute; top: 50%; width: 10px; height: 10px; background-color: #ffffff; border-radius: 50%; box-shadow: 0 0 8px rgba(255, 255, 255, 0.8); transform: translate(-50%, -50%); transition: left 0.05s linear; }
         
-        /* Forces Desktop to perfectly cover the entire area */
         @media (min-width: 1024px) {
           .gallery-viewport { overflow: hidden; display: block; }
           .gallery-content-wrapper { height: 100vh; width: 100vw; }
@@ -206,7 +204,8 @@ export default function Gallery() {
                   transform: frame.canvas.transform, cursor: 'pointer',
                   backgroundColor: frame.data.image ? 'transparent' : 'rgba(255,255,255,0.7)', 
                   backgroundImage: frame.data.image ? `url(${frame.data.image})` : 'none',
-                  backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                  backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  border: '1px solid red'
                 }}
                 onMouseOver={(e) => { e.currentTarget.style.transform = `${frame.canvas.transform} scale(1.03)`; e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.6)'; }}
                 onMouseOut={(e) => { e.currentTarget.style.transform = frame.canvas.transform; e.currentTarget.style.boxShadow = 'none'; }}
@@ -215,14 +214,12 @@ export default function Gallery() {
                 position: 'absolute', left: frame.plaque.x, top: frame.plaque.y, width: frame.plaque.w, height: frame.plaque.h,
                 transform: frame.plaque.transform, display: 'flex', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none', 
                 color: 'rgba(60, 40, 10, 0.9)', fontFamily: 'Georgia, serif', fontWeight: 'bold', 
-                
-                /* FIX: Switched from broken cqi to highly stable vh */
                 fontSize: 'clamp(6px, 1.8vh, 22px)', 
                 lineHeight: '1.1',
                 padding: '0 2%',
                 overflow: 'hidden',
-
-                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)' 
+                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)',
+                border: '1px solid black' 
               }}>
                 {frame.data.title}
               </div>
@@ -246,10 +243,10 @@ export default function Gallery() {
           </div>
         )}
 
-        {/* MAIN TITLE (FIXED CLAMPING AND ADDED LINE HEIGHT) */}
+        {/* MAIN TITLE (FIXED MOBILE SCALING & PUSHED DOWN) */}
         {!selectedArt && currentRoomData.id === 'center' && (
-          <div style={{ position: 'fixed', top: 'clamp(15px, 4vh, 40px)', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', pointerEvents: 'none', zIndex: 5, width: '90%', maxWidth: '1000px' }}>
-            <h1 style={{ margin: 0, lineHeight: '1.2', fontFamily: '"Georgia", "Times New Roman", serif', fontSize: 'clamp(20px, 4vh, 45px)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: 'clamp(3px, 1vw, 8px)', background: 'linear-gradient(to right, #b8860b, #ffd700, #fff8dc, #ffd700, #b8860b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.8)) drop-shadow(0px 2px 4px rgba(0,0,0,0.6))' }}>
+          <div style={{ position: 'fixed', top: 'clamp(30px, 8vh, 60px)', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', pointerEvents: 'none', zIndex: 5, width: '90%', maxWidth: '1000px' }}>
+            <h1 style={{ margin: 0, lineHeight: '1.2', fontFamily: '"Georgia", "Times New Roman", serif', fontSize: 'clamp(18px, 6vw, 45px)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: 'clamp(2px, 1vw, 8px)', background: 'linear-gradient(to right, #b8860b, #ffd700, #fff8dc, #ffd700, #b8860b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.8)) drop-shadow(0px 2px 4px rgba(0,0,0,0.6))' }}>
               McPepe Art Gallery
             </h1>
           </div>

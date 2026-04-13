@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
 
-// Helper to calculate exactly where an artwork will spawn in the 2.5D gallery
 const getPlacementLabel = (index, total) => {
   const extraSlots = Math.max(0, total - 11);
   const transitionsNeeded = Math.ceil(extraSlots / 3);
@@ -30,20 +29,16 @@ const getPlacementLabel = (index, total) => {
 export default function Admin() {
   const { movies, setMovies, gallery, setGallery } = useData();
   
-  // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  // UI State
   const [activeTab, setActiveTab] = useState('gallery');
   const [draggedIndex, setDraggedIndex] = useState(null);
 
-  // Form States
   const [movieForm, setMovieForm] = useState({ title: '', subtitle: '', description: '', ytId: '' });
   const [galleryForm, setGalleryForm] = useState({ artist: '', title: '', price: '', image: '', buyLink: '' });
 
-  // --- AUTHENTICATION ---
   useEffect(() => {
     const authStatus = sessionStorage.getItem('mcpepe_admin_auth');
     if (authStatus === 'true') setIsAuthenticated(true);
@@ -51,7 +46,7 @@ export default function Admin() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (passwordInput === 'pepeadmin') { // <-- YOUR ADMIN PASSWORD HERE
+    if (passwordInput === 'pepeadmin') {
       setIsAuthenticated(true);
       sessionStorage.setItem('mcpepe_admin_auth', 'true');
       setLoginError('');
@@ -65,7 +60,6 @@ export default function Admin() {
     sessionStorage.removeItem('mcpepe_admin_auth');
   };
 
-  // --- ADD / DELETE LOGIC ---
   const handleAddMovie = (e) => {
     e.preventDefault();
     setMovies([{ ...movieForm, id: Date.now().toString() }, ...movies]);
@@ -81,11 +75,10 @@ export default function Admin() {
   const deleteMovie = (id) => setMovies(movies.filter(m => m.id !== id));
   const deleteArt = (id) => setGallery(gallery.filter(g => g.id !== id));
 
-  // --- DRAG AND DROP LOGIC (GALLERY) ---
+  // --- DRAG AND DROP HANDLERS ---
   const handleDragStart = (e, index) => {
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = 'move';
-    // Transparent drag image so the ghost doesn't block view
     e.currentTarget.style.opacity = '0.4';
   };
 
@@ -95,13 +88,12 @@ export default function Admin() {
   };
 
   const handleDragOver = (e, index) => {
-    e.preventDefault(); // Necessary to allow dropping
+    e.preventDefault();
   };
 
-  const handleDrop = (e, dropIndex) => {
+  const handleGalleryDrop = (e, dropIndex) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === dropIndex) return;
-
     const newGallery = [...gallery];
     const draggedItem = newGallery.splice(draggedIndex, 1)[0];
     newGallery.splice(dropIndex, 0, draggedItem);
@@ -109,7 +101,16 @@ export default function Admin() {
     setDraggedIndex(null);
   };
 
-  // --- STYLES ---
+  const handleMovieDrop = (e, dropIndex) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === dropIndex) return;
+    const newMovies = [...movies];
+    const draggedItem = newMovies.splice(draggedIndex, 1)[0];
+    newMovies.splice(dropIndex, 0, draggedItem);
+    setMovies(newMovies);
+    setDraggedIndex(null);
+  };
+
   const s = {
     wrapper: { width: '100vw', height: '100vh', backgroundColor: '#0f172a', color: '#f8fafc', fontFamily: 'system-ui, sans-serif', overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' },
     loginBox: { marginTop: '15vh', background: 'rgba(30, 41, 59, 0.7)', backdropFilter: 'blur(10px)', padding: '40px', borderRadius: '16px', border: '1px solid rgba(6, 182, 212, 0.3)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', width: '100%', maxWidth: '400px', textAlign: 'center' },
@@ -126,12 +127,11 @@ export default function Admin() {
     badge: { display: 'inline-block', padding: '4px 8px', background: 'rgba(6, 182, 212, 0.1)', color: '#06b6d4', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '6px' }
   };
 
-  // --- LOGIN RENDER ---
   if (!isAuthenticated) {
     return (
       <div style={s.wrapper}>
         <div style={s.loginBox}>
-          <h2 style={{ margin: '0 0 24px 0', color: '#fff' }}>Admin Access</h2>
+          <h2 style={{ margin: '0 0 24px 0', color: '#fff' }}>Secure Admin Access</h2>
           <form onSubmit={handleLogin}>
             <input 
               type="password" placeholder="Enter Password" value={passwordInput} 
@@ -139,17 +139,15 @@ export default function Admin() {
               style={{ ...s.input, textAlign: 'center' }} autoFocus 
             />
             {loginError && <p style={{ color: '#ef4444', fontSize: '14px', margin: '0 0 16px 0' }}>{loginError}</p>}
-            <button type="submit" style={s.btnPrimary}>Log in</button>
+            <button type="submit" style={s.btnPrimary}>Unlock System</button>
           </form>
         </div>
       </div>
     );
   }
 
-  // --- MAIN ADMIN RENDER ---
   return (
     <div style={s.wrapper}>
-      {/* HEADER */}
       <header style={s.header}>
         <h1 style={{ margin: 0, fontSize: '24px', background: 'linear-gradient(to right, #06b6d4, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           McPepe Town • Admin Control
@@ -161,10 +159,7 @@ export default function Admin() {
         </div>
       </header>
 
-      {/* TWO COLUMN LAYOUT */}
       <div style={{...s.container, display: window.innerWidth < 768 ? 'block' : 'grid'}}>
-        
-        {/* LEFT COLUMN: ADD NEW FORMS */}
         <div>
           {activeTab === 'gallery' ? (
             <div style={s.card}>
@@ -192,7 +187,6 @@ export default function Admin() {
           )}
         </div>
 
-        {/* RIGHT COLUMN: LIST AND REORDER */}
         <div>
           {activeTab === 'gallery' && (
             <div style={s.card}>
@@ -211,7 +205,7 @@ export default function Admin() {
                       onDragStart={(e) => handleDragStart(e, index)}
                       onDragEnd={handleDragEnd}
                       onDragOver={(e) => handleDragOver(e, index)}
-                      onDrop={(e) => handleDrop(e, index)}
+                      onDrop={(e) => handleGalleryDrop(e, index)}
                       style={{ 
                         ...s.listItem, 
                         border: draggedIndex === index ? '1px dashed #06b6d4' : '1px solid #334155',
@@ -240,12 +234,26 @@ export default function Admin() {
             <div style={s.card}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h3 style={{ margin: 0, color: '#fff' }}>Now Playing ({movies.length} Movies)</h3>
+                <span style={{ fontSize: '12px', color: '#94a3b8' }}>Drag to reorder ↕</span>
               </div>
               
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {movies.map((m, index) => (
-                  <div key={m.id} style={s.listItem}>
+                  <div 
+                    key={m.id} 
+                    draggable 
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleMovieDrop(e, index)}
+                    style={{ 
+                      ...s.listItem,
+                      border: draggedIndex === index ? '1px dashed #06b6d4' : '1px solid #334155',
+                      background: draggedIndex === index ? 'rgba(6, 182, 212, 0.05)' : '#0f172a'
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                      <div style={s.dragHandle}>⠿</div>
                       <div style={{ background: '#1e293b', width: '40px', height: '40px', borderRadius: '6px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#06b6d4', fontWeight: 'bold' }}>{index + 1}</div>
                       <div>
                         <div style={{ fontWeight: 'bold', color: '#fff', fontSize: '15px' }}>{m.title}</div>
