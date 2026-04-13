@@ -36,9 +36,9 @@ const BASE_SLOTS = {
   transition: {
     bg: artTransition,
     frames: [
-      { canvas: { x: '23.8%', y: '34.9%', w: '12.5%', h: '32.2%', transform: 'none' }, plaque: { x: '22.7%', y: '76.5%', w: '14.6%', h: '7%', transform: 'none' } },
-      { canvas: { x: '44.4%', y: '34.8%', w: '12.3%', h: '32.3%', transform: 'none' }, plaque: { x: '43.1%', y: '76.5%', w: '14.6%', h: '7%', transform: 'none' } },
-      { canvas: { x: '64.8%', y: '34.7%', w: '12.4%', h: '32.4%', transform: 'none' }, plaque: { x: '63.8%', y: '76.5%', w: '14.7%', h: '7%', transform: 'none' } },
+      { canvas: { x: '19%', y: '28.4%', w: '15.1%', h: '39%', transform: 'none' }, plaque: { x: '17.5%', y: '79%', w: '18%', h: '8.5%', transform: 'none' } },
+      { canvas: { x: '44.4%', y: '28.4%', w: '14%', h: '39%', transform: 'none' }, plaque: { x: '42.8%', y: '79%', w: '18%', h: '8.5%', transform: 'none' } },
+      { canvas: { x: '68.5%', y: '28.4%', w: '15.2%', h: '39%', transform: 'none' }, plaque: { x: '67.4%', y: '79%', w: '18%', h: '8.5%', transform: 'none' } },
     ]
   }
 };
@@ -204,8 +204,7 @@ export default function Gallery() {
                   transform: frame.canvas.transform, cursor: 'pointer',
                   backgroundColor: frame.data.image ? 'transparent' : 'rgba(255,255,255,0.7)', 
                   backgroundImage: frame.data.image ? `url(${frame.data.image})` : 'none',
-                  backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                  border: '1px solid red'
+                  backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.2s ease, box-shadow 0.2s ease'
                 }}
                 onMouseOver={(e) => { e.currentTarget.style.transform = `${frame.canvas.transform} scale(1.03)`; e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.6)'; }}
                 onMouseOut={(e) => { e.currentTarget.style.transform = frame.canvas.transform; e.currentTarget.style.boxShadow = 'none'; }}
@@ -218,8 +217,7 @@ export default function Gallery() {
                 lineHeight: '1.1',
                 padding: '0 2%',
                 overflow: 'hidden',
-                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)',
-                border: '1px solid black' 
+                textTransform: 'uppercase', textAlign: 'center', textShadow: '1px 1px 0px rgba(255, 255, 255, 0.5)'
               }}>
                 {frame.data.title}
               </div>
