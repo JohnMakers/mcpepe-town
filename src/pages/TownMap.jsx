@@ -21,13 +21,19 @@ export default function TownMap() {
     }
   };
 
-  useEffect(() => {
+  // Dedicated function to center the map mathematically
+  const centerMap = () => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current;
-      // Start perfectly in the horizontal center
       container.scrollLeft = (container.scrollWidth - container.clientWidth) / 2;
       updateScrollProgress();
     }
+  };
+
+  useEffect(() => {
+    // Failsafe for if the image is heavily cached and loads instantly
+    const timer = setTimeout(centerMap, 100);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -65,23 +71,22 @@ export default function TownMap() {
           transition: filter 0.4s ease;
         }
 
-        /* 2. DESKTOP OVERRIDE: Locks perfectly to the screen */
+        /* 2. DESKTOP OVERRIDE: Stretches map to strictly cover the entire monitor */
         @media (min-width: 1024px) {
           .map-viewport {
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: block;
           }
           .map-wrapper {
-            height: auto;
-            width: auto;
+            height: 100vh;
+            width: 100vw;
           }
           .map-image {
-            width: auto;
-            height: auto;
-            max-width: 100vw;
-            max-height: 100vh;
+            width: 100vw;
+            height: 100vh;
+            object-fit: fill; /* Forces the image to stretch and cover the dead space */
+            max-width: none;
+            max-height: none;
           }
           .scroll-track-x { display: none !important; }
         }
@@ -171,6 +176,7 @@ export default function TownMap() {
             src={townMap} 
             alt="Map of McPepe Town" 
             className="map-image"
+            onLoad={centerMap} /* Critical fix: waits for image to load before panning to center */
             style={{ filter: activeBuilding || isMenuOpen ? 'blur(8px) brightness(0.4)' : 'none' }}
           />
 
